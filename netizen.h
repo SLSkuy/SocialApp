@@ -11,16 +11,21 @@
 class Netizen
 {
 public:
-    Netizen(std::string account,std::string name) : m_account(account),m_nickName(name){}
+    Netizen(std::string account) : m_account(account){ logIn();}    //登陆账号
+    Netizen() {signUp();}   //注册账号
+    void signUp();
+    void logIn();
     void sendFriendRequest(std::string);
     bool acceptFriendReques(std::string);
+    void delFriend(std::string);
     void sendMessage();
-    void checkHistory();
     void listFriends();
     bool hasId(std::string);
 private:
+    void send2Server();
     std::string m_account;
     std::string m_nickName;
+    std::string m_password;
     std::vector<Netizen*> _friends;
 };
 

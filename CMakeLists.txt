@@ -9,6 +9,7 @@ add_executable(SocialApp
     socialui.h socialui.cpp
     netizen.h netizen.cpp
     server.h server.cpp
+    message.h message.cpp
 
 )
 

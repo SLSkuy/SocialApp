@@ -10,8 +10,6 @@ using std::cin;
 using std::cout;
 using std::endl;
 
-#include <unistd.h> //for usleep()
-
 #include <string>
 using std::string;
 
