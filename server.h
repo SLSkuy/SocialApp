@@ -18,13 +18,17 @@ public:
     void regNetizen();
     void delNetizen();
     void initServer();
+    void handleClientSocket(int serverFd);
+    void handleClientMessage(int socketFd,int port);
+    int m_serverSocket;
 private:
     std::string m_IP;
     std::string m_Port;
-    std::unordered_map<std::string,std::string> _accounts; //(account,password)
+    std::unordered_map<std::string,int> _clientFds; //(account,password)
     std::vector<Netizen*> _netizens;
 };
 
 extern void startServer();
+
 
 #endif // SERVER_H

@@ -22,10 +22,9 @@ public:
     void listFriends();
     bool hasId(std::string);
 private:
-    void send2Server();
     std::string m_account;
     std::string m_nickName;
-    std::string m_password;
+    int m_clientSocket;
     std::vector<Netizen*> _friends;
 };
 

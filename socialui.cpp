@@ -3,6 +3,7 @@
 // 软件ui交互实现
 
 #include "socialui.h"
+#include "netizen.h"
 
 #include <iostream>
 #include <unistd.h> //for usleep()
@@ -22,6 +23,7 @@ void startUp()
         if(userInput == "1")
         {
             //signUp 委托服务端进行操作
+            Netizen user;
             break;
         }else if(userInput == "2"){
             //logIn 委托服务端进行操作
