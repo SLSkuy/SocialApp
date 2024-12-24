@@ -14,13 +14,13 @@
 class Server
 {
 public:
-    Server(std::string ip,std::string port) : m_IP(ip),m_Port(port) {}
+    Server(std::string ip,std::string port) : m_IP(ip),m_Port(port) {initServer();}
     void regNetizen();
     void delNetizen();
+    void initServer();
 private:
     std::string m_IP;
     std::string m_Port;
-    int m_onlineNum;
     std::unordered_map<std::string,std::string> _accounts; //(account,password)
     std::vector<Netizen*> _netizens;
 };
