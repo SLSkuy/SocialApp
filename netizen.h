@@ -23,6 +23,7 @@ private:
     std::string m_account;
     std::string m_nickName;
     int m_clientSocket;
+    int m_port;
     std::vector<Netizen*> _friends;
 };
 

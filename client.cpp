@@ -32,7 +32,7 @@ void startUp()
             //signUp 本地输入账号密码等发送服务端
             clientSocket = connect2Server();
             if(clientSocket < 0){    //尝试连接服务器
-                cout << "failed to connect the server." << endl;
+                //连接服务器失败程序退出
                 return;
             }
 
@@ -64,18 +64,18 @@ bool signUp(int& clientSocket)
 
 int connect2Server()    //连接到服务器
 {
-    int clientSocket = socket(AF_INET,SOCK_STREAM,0);
+    int clientSocket = socket(AF_INET,SOCK_STREAM,0);   //获取客户端socket
     if(clientSocket <= 0){
         cerr << "Socket creation failed!" << endl;
         return -1;
     }
 
-    struct sockaddr_in serverAddress;
+    struct sockaddr_in serverAddress;   //服务器地址信息
     serverAddress.sin_family = AF_INET;
     serverAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
     serverAddress.sin_port = htons(8080);
 
-    if(connect(clientSocket,(struct sockaddr*) &serverAddress,sizeof(serverAddress)) < 0){
+    if(connect(clientSocket,(struct sockaddr*) &serverAddress,sizeof(serverAddress)) < 0){  //尝试连接服务器
         cout << "connect failed" << endl;
         return -1;
     }
@@ -94,7 +94,7 @@ void sendMsg2Server(int& clientSocket)   //发送信息给服务端
         std::getline(cin,buf);
 
         // 发送消息到服务端
-        send(clientSocket, buf.c_str(), sizeof(buf.c_str()), 0);
+        send(clientSocket, buf.c_str(), 1024, 0);
     }
 }
 
@@ -104,9 +104,17 @@ void receiveFromServer(int clientSocket)    //从服务端获取信息
     std::string buf;
     while(true){
         buf.clear();
-        memset(buffer,0,sizeof(buffer));
-        recv(clientSocket, buffer, sizeof(buffer), 0);
+        memset(buffer, 0, sizeof(buffer));
+        int valread = recv(clientSocket, buffer, sizeof(buffer), 0);
         buf = buffer;
+
+        if(valread <= 0)
+        {
+            cout << "Server is closed.\n"
+                 << "The application will exit." << endl;
+            exit(-1);
+        }
+
         if(!buf.empty())
         {
             cout << "\033[2K\rreceive from server: " << buffer << endl;

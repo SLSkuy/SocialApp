@@ -12,7 +12,7 @@ using std::cin;     using std::cout;    using std::endl;    using std::cerr;
 #include <arpa/inet.h>  //网络传输格式转换
 #include <cstring>  //memset
 
-void startServer()
+void startServer()  //启动服务器
 {
     //启动服务端
     cout << "Specify a specific access IP address? (Y/N): ";
@@ -82,7 +82,7 @@ void Server::initServer()   //初始化获取服务端socket
     m_serverSocket = serverFd;
 }
 
-void Server::handleClientSocket()
+void Server::handleClientSocket()   //捕获客户端socket
 {
     int serverSocket{m_serverSocket};
     while(true){
@@ -98,42 +98,55 @@ void Server::handleClientSocket()
             int clientPort{ntohs(clientAddress.sin_port)};
             cout << "Client on port " << clientPort << " connected." << endl;
 
-            _ports[clientPort] = clientSocket;
+            m_sockets[clientPort] = clientSocket;
 
             std::thread(&Server::handleClientMessage,this,clientSocket, clientPort).detach();   //每成功捕获一个用户连接新开一个线程用于接受客户端消息
         }
     }
 }
 
-void Server::handleClientMessage(int clientSocket, int port) {
+void Server::handleClientMessage(int clientSocket, int clientPort)  //捕获客户端信息
+{
     char buffer[1024];
     std::string buf;
-    int valread;
 
     while (true) {
+        buf.clear();
         memset(buffer, 0, sizeof(buffer));  //刷新缓存区域防止残留信息
-        valread = recv(clientSocket, buffer, sizeof(buffer),0);
+        int valread = recv(clientSocket, buffer, sizeof(buffer),0);
         buf = buffer;
+
         if (valread <= 0) { //未接收到消息
             std::cerr << "Client disconnected" << std::endl;
-            _ports.erase(port);
+            m_sockets.erase(clientPort);
             close(clientSocket);
             break;
         }else{
             if(!buf.empty())
             {
-                std::cout << "Message from client(Port: " << port << "): " << buf << std::endl; //屏蔽空消息
-            }else{
-                for(auto& it: _ports){
-                    if(it.first != port)
-                        send(it.second, buf.c_str(), sizeof(buffer),0);
-                }
+                std::cout << "Message from client(Port: " << clientPort << "): " << buf << std::endl; //屏蔽空消息
+                msgProcess(buf,clientPort);
             }
         }
     }
 }
 
-void Server::msgProcess(std::string& msg)
+void Server::msgProcess(std::string& msg,int clientPort)   //处理接收到的客户端信息
 {
-
+    int clientSocket{m_sockets[clientPort]};
+    if(msg == "/friend")    //交朋友
+    {
+        //委托Netizen类
+        send(clientSocket, "make friend", 10,0);
+    }else if(msg == "/m")   //私聊
+    {
+        //委托Netizen类
+    }else{
+        //非命令格式
+        //非私聊
+        for(auto& it: m_sockets){
+            if(it.first != clientPort)
+                send(it.second, msg.c_str(), msg.size(),0);
+        }
+    }
 }
