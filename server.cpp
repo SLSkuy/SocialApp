@@ -1,6 +1,6 @@
 // 2023051604044 万睿
 // 2024-12-23
-// 网络聊天实现
+// 服务端启动相关
 
 #include "server.h"
 
@@ -42,8 +42,9 @@ void startServer()
     cout << "The Server is loading..." << endl;
     //创建服务器对象
     Server server(accessIP,port);
+    server.initServer();    //初始化服务端
 
-    server.handleClientSocket(server.m_serverSocket);
+    server.handleClientSocket();   //捕获客户端请求
 }
 
 void Server::initServer()   //初始化获取服务端socket
@@ -55,12 +56,13 @@ void Server::initServer()   //初始化获取服务端socket
         return;
     }
 
-    //绑定端口号
+
     struct sockaddr_in serverAddress;
     serverAddress.sin_family = AF_INET;     //Ipv4协议
     serverAddress.sin_addr.s_addr = inet_addr(m_IP.c_str());    //转换为大端字节序列
     serverAddress.sin_port = htons(stoi(m_Port));  //转换为大端字节序列适应于网络传输
 
+    //绑定端口号
     if(bind(serverFd,(struct sockaddr*) &serverAddress, sizeof(serverAddress)) < 0)
     {
         cerr << "Socket bind failed!" << endl;
@@ -80,8 +82,9 @@ void Server::initServer()   //初始化获取服务端socket
     m_serverSocket = serverFd;
 }
 
-void Server::handleClientSocket(int serverSocket)
+void Server::handleClientSocket()
 {
+    int serverSocket{m_serverSocket};
     while(true){
         struct sockaddr_in clientAddress;
         socklen_t clientAddressLen = sizeof(clientAddress);  // 初始化地址结构大小
@@ -91,27 +94,46 @@ void Server::handleClientSocket(int serverSocket)
         {
             cerr << "Accept failed!" << endl;
             return;
-        }
+        }else{
+            int clientPort{ntohs(clientAddress.sin_port)};
+            cout << "Client on port " << clientPort << " connected." << endl;
 
-        int clientPort{ntohs(clientAddress.sin_port)};
-        cout << "Client on " << clientPort << " connected." << endl;
-        std::thread(&Server::handleClientMessage,this,clientSocket, clientPort).detach();
+            _ports[clientPort] = clientSocket;
+
+            std::thread(&Server::handleClientMessage,this,clientSocket, clientPort).detach();   //每成功捕获一个用户连接新开一个线程用于接受客户端消息
+        }
     }
 }
 
 void Server::handleClientMessage(int clientSocket, int port) {
     char buffer[1024];
+    std::string buf;
     int valread;
 
     while (true) {
         memset(buffer, 0, sizeof(buffer));  //刷新缓存区域防止残留信息
         valread = recv(clientSocket, buffer, sizeof(buffer),0);
-        if (valread <= 0) {
+        buf = buffer;
+        if (valread <= 0) { //未接收到消息
             std::cerr << "Client disconnected" << std::endl;
+            _ports.erase(port);
             close(clientSocket);
             break;
+        }else{
+            if(!buf.empty())
+            {
+                std::cout << "Message from client(Port: " << port << "): " << buf << std::endl; //屏蔽空消息
+            }else{
+                for(auto& it: _ports){
+                    if(it.first != port)
+                        send(it.second, buf.c_str(), sizeof(buffer),0);
+                }
+            }
         }
-
-        std::cout << "Message from client(Port: " << port << "): " << buffer << std::endl;
     }
+}
+
+void Server::msgProcess(std::string& msg)
+{
+
 }

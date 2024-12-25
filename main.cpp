@@ -2,7 +2,7 @@
 // 2024-12-23
 // 社交软件主函数交互
 
-#include "socialui.h"
+#include "client.h"
 #include "server.h"
 
 #include <iostream>
@@ -33,4 +33,3 @@ int main()
 
     return 0;
 }
-

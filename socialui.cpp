@@ -1,6 +1,6 @@
 // 2023051604044 万睿
 // 2024-12-23
-// 软件ui交互实现
+// ui动画交互实现
 
 #include "socialui.h"
 #include "netizen.h"
@@ -8,31 +8,6 @@
 #include <iostream>
 #include <unistd.h> //for usleep()
 #include <string>
-
-void startUp()
-{
-    //启动客户端
-    loadingAnimation();
-
-    std::cout << "Welcome to Yuzu-ChatPlatform!\n"
-         <<  "Would you like to Sign-Up(1) or Log-In(2): ";
-
-    std::string userInput;
-    while(std::cin >> userInput)
-    {
-        if(userInput == "1")
-        {
-            //signUp 委托服务端进行操作
-            Netizen user;
-            break;
-        }else if(userInput == "2"){
-            //logIn 委托服务端进行操作
-            break;
-        }else{
-            std::cout << "Please input 1 or 2, try again: ";
-        }
-    }
-}
 
 void clearScreen()  //清空屏幕
 {
@@ -43,7 +18,7 @@ void loadingAnimation() //加载动画
 {
     clearScreen();  //清屏确保软件占据整个终端增加交互体验
     std::cout << "Yuzu-ChatPlatform is loading:\n";
-    int total_steps{50}; // 动画步骤总数
+    int total_steps{30}; // 动画步骤总数
     for (int i = 0; i <= total_steps; ++i) {
         // 使用回车符\r将光标移到行首，然后输出更新的内容
         std::cout << "\rProgress: [";
@@ -77,7 +52,7 @@ void loadingAnimation() //加载动画
     clearScreen(); //清屏确保软件占据整个终端增加交互体验
 }
 
-void drawFrame(int frame) {
+void drawFrame(const int& frame) {
     const char* cat_frames[] = {
         R"(
 Ciallo～(∠・ω< )⌒/

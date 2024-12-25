@@ -12,8 +12,6 @@ class Netizen
 {
 public:
     Netizen(std::string account) : m_account(account){ logIn();}    //登陆账号
-    Netizen() {signUp();}   //注册账号
-    void signUp();
     void logIn();
     void sendFriendRequest(std::string);
     bool acceptFriendReques(std::string);
