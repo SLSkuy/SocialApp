@@ -11,21 +11,18 @@
 class Netizen
 {
 public:
-    Netizen(std::string account) : m_account(account){ logIn();}    //登陆账号
-    Netizen() {signUp();}   //注册账号
-    void signUp();
+    Netizen(std::string name) : m_nickName(name){ logIn();}    //登陆账号
     void logIn();
-    void sendFriendRequest(std::string);
-    bool acceptFriendReques(std::string);
-    void delFriend(std::string);
-    void sendMessage();
+    void sendFriendRequest(std::string name);
+    bool acceptFriendRequest(std::string name);
+    void delFriend(std::string name);
+    void sendMessage(std::string context);
     void listFriends();
-    bool hasId(std::string);
+    bool hasId(std::string name);
 private:
-    void send2Server();
     std::string m_account;
     std::string m_nickName;
-    std::string m_password;
+    int m_clientSocket;
     std::vector<Netizen*> _friends;
 };
 

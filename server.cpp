@@ -5,6 +5,9 @@
 #include "server.h"
 
 #include <string>
+#include <vector>
+
+std::vector<Netizen> netizens;
 
 void startServer()
 {

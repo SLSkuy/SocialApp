@@ -1,30 +1,37 @@
 // 2023051604044 万睿
 // 2024-12-23
-// 网络聊天声明
+// 服务端声明
 
 #ifndef SERVER_H
 #define SERVER_H
 
 #include "netizen.h"
+#include "message.h"
 
 #include <unordered_map>
 #include <vector>
 #include <string>
 
+extern std::vector<Netizen> netizens;
+
 class Server
 {
 public:
     Server(std::string ip,std::string port) : m_IP(ip),m_Port(port) {}
-    void regNetizen();
+    void regNetizen(std::string account,std::string nickName);
     void delNetizen();
+    void initServer();
+    void handleClientSocket();
+    void handleClientMessage(int clinetSocket,int clientPort);
+    void msgProcess(std::string& msg,int clientPort);
 private:
+    int m_serverSocket;
     std::string m_IP;
     std::string m_Port;
-    int m_onlineNum;
-    std::unordered_map<std::string,std::string> _accounts; //(account,password)
-    std::vector<Netizen*> _netizens;
+    std::unordered_map<int,std::string> m_clients; //(port,name)
+    std::unordered_map<int,int> m_sockets; //(port,socket)
 };
 
-extern void startServer();
+void startServer(); //启动服务器 后续客户服务端分离后可写入服务端主函数
 
 #endif // SERVER_H
