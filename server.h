@@ -12,18 +12,17 @@
 #include <vector>
 #include <string>
 
-extern std::vector<Netizen> netizens;
-
 class Server
 {
 public:
     Server(std::string ip,std::string port) : m_IP(ip),m_Port(port) {}
-    void regNetizen(std::string account,std::string nickName);
-    void delNetizen();
+    void regNetizen(std::string nickName,int clientSocket,int clientPort);
+    void delNetizen(std::string nickName);
     void initServer();
     void handleClientSocket();
     void handleClientMessage(int clinetSocket,int clientPort);
-    void msgProcess(std::string& msg,int clientPort);
+    void clientProcess(std::string& msg,int clientPort);
+    void msgProcess(Message& msg);
 private:
     int m_serverSocket;
     std::string m_IP;

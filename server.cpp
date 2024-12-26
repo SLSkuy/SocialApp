@@ -4,17 +4,14 @@
 
 #include "server.h"
 
-#include <iostream>
-using std::cin;     using std::cout;    using std::endl;    using std::cerr;
-#include <string>
-#include <vector>
-
-std::vector<Netizen> netizens;
-
-#include <thread>
 #include <sys/socket.h>  //socket套接字
 #include <arpa/inet.h>  //网络传输格式转换
 #include <cstring>  //memset
+#include <iostream>
+using std::cin;     using std::cout;    using std::endl;    using std::cerr;
+#include <string>
+#include <thread>
+#include <sstream>
 
 void startServer()  //启动服务器
 {
@@ -123,34 +120,105 @@ void Server::handleClientMessage(int clientSocket, int clientPort)  //捕获客�
         if (valread <= 0) { //未接收到消息
             std::cerr << "Client disconnected" << std::endl;
             m_sockets.erase(clientPort);
+            m_clients.erase(clientPort);
             close(clientSocket);
             break;
         }else{
             if(!buf.empty())
             {
                 std::cout << "Message from client(Port: " << clientPort << "): " << buf << std::endl; //屏蔽空消息
-                msgProcess(buf,clientPort);
+                clientProcess(buf,clientPort);
             }
         }
     }
 }
 
-void Server::msgProcess(std::string& msg,int clientPort)   //处理接收到的客户端信息
+void Server::regNetizen(std::string nickName,int clientSocket,int clientPort)
+{
+    Netizen newUser(nickName,clientSocket,this);
+    m_netizens.emplace_back(newUser);
+    m_clients[clientPort] = nickName;
+    m_sockets[clientPort] = clientSocket;
+}
+
+void Server::delNetizen(std::string nickName)
+{
+    for(auto& it : m_netizens){
+        it.delFriend(nickName);     //使所有用户删除该用户好友
+    }
+
+    for(auto it = m_netizens.begin();it != m_netizens.end();it++){
+        if(it->getName() == nickName){
+            m_netizens.erase(it);
+            int netizenPort;
+            for(auto& it : m_clients){
+                if(it.second == nickName){
+                    netizenPort = it.first;
+                    break;
+                }
+            }
+            m_clients.erase(netizenPort);
+            m_sockets.erase(netizenPort);
+            break;
+        }
+    }
+}
+
+void Server::clientProcess(std::string& msg,int clientPort)   //初步处理接收到的客户端信息
 {
     int clientSocket{m_sockets[clientPort]};
-    if(msg == "/friend")    //交朋友
-    {
-        //委托Netizen类
-        send(clientSocket, "make friend", 10,0);
-    }else if(msg == "/m")   //私聊
-    {
-        //委托Netizen类
-    }else{
-        //非命令格式
-        //非私聊
-        for(auto& it: m_sockets){
-            if(it.first != clientPort)
-                send(it.second, msg.c_str(), msg.size(),0);
+    std::istringstream ss{msg};
+    std::string command;
+    std::string arguments;
+    ss >> command;
+    if(command == "/signUp"){   //不存在用户
+        ss >> arguments;
+        regNetizen(arguments,clientSocket,clientPort);
+        arguments = "sign up successfully.";
+        send(clientSocket,arguments.c_str(),arguments.size(),0);
+    }else{                      //存在用户
+        for(auto& it: m_netizens){
+            if(it.getName() == m_clients[clientPort]){
+                it.sendMessage(msg);
+                break;  //找到后跳出避免多余性能消耗
+            }
+        }
+    }
+}
+
+void Server::msgProcess(Message& msg)   //处理信息
+{
+    if(msg.getType() == "normal"){
+        std::string reply{msg.getSender()->getName() + ": " + msg.getContext()};
+        for(auto& it : m_clients){
+            if(it.second != msg.getSender()->getName()){
+                int clientPort{it.first};
+                send(m_sockets[clientPort],reply.c_str(),reply.size(),0);
+            }
+        }
+    }else if(msg.getType() == "command"){
+        std::istringstream ss{msg.getContext()};
+        std::string command;
+        std::string arguments;
+        ss >> command;
+        if(command == "/list"){ //委托Neitzen类处理列出所有朋友
+            msg.getSender()->listFriends();
+        }else if(command == "/friend"){ //委托Netizen类处理添加好友事件
+            ss >> arguments;
+            for(auto& it: m_netizens){
+                if(it.getName() == arguments){
+                    msg.getSender()->sendFriendRequest(&it);
+                    break;  //找到后跳出避免多余性能消耗
+                }
+            }
+        }else{  //未知命令处理
+            for(auto& it : m_clients){
+                if(it.second == msg.getSender()->getName()){
+                    int clientPort{it.first};
+                    std::string reply{"Unkown command."};
+                    send(m_sockets[clientPort],reply.c_str(),reply.size(),0);
+                }
+            }
         }
     }
 }

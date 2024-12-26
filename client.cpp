@@ -5,15 +5,15 @@
 #include "client.h"
 #include "socialui.h"
 
+#include <sys/socket.h>
+#include <arpa/inet.h>
+//#include <limits>
+#include <cstring>
 #include <string>
 using std::string;
 #include <iostream>
 using std::cin;     using std::cout;    using std::endl;    using std::cerr;
 #include <thread>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-//#include <limits>
-#include <cstring>
 
 void startUp()
 {
@@ -59,6 +59,11 @@ void startUp()
 
 bool signUp(int& clientSocket)
 {
+    string input;
+    cout << "Please enter your name: ";
+    cin >> input;
+    string buf{"/signUp " + input};
+    send(clientSocket,buf.c_str(),buf.size(),0);
     return true;
 }
 

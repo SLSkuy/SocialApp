@@ -13,12 +13,16 @@
 class Message
 {
 public:
-    Message();
+    Message(Netizen* sender,std::string context,std::string type) : _sender(sender),m_context(context),m_type(type) {}
+    std::string getContext() {return m_context;}
+    std::string getType() {return m_type;}
+    Netizen* getSender() {return _sender;}
+    Netizen* getReceiver() {return _receiver;}
 private:
-    std::string m_time;
     std::string m_context;
+    std::string m_type;
     Netizen* _sender;
-    std::vector<Netizen*> _receiver;
+    Netizen* _receiver;
 };
 
 #endif // MESSAGE_H

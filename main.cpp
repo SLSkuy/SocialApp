@@ -6,9 +6,7 @@
 #include "server.h"
 
 #include <iostream>
-using std::cin;
-using std::cout;
-using std::endl;
+using std::cin;     using std::cout;    using std::endl;
 #include <string>
 using std::string;
 
@@ -23,7 +21,7 @@ int main()
             startServer();  //作为服务端
             break;
         }else if(userInput == "C" or userInput == "c"){
-            // startUp();  //作为用户端启动交互界面
+            startUp();  //作为用户端启动交互界面
             break;
         }else{
             cout << "Please input C or S: ";

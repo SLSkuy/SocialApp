@@ -8,22 +8,25 @@
 #include <string>
 #include <vector>
 
+class Server;
+
 class Netizen
 {
 public:
-    Netizen(std::string name) : m_nickName(name){ logIn();}    //登陆账号
-    void logIn();
-    void sendFriendRequest(std::string name);
-    bool acceptFriendRequest(std::string name);
+    Netizen(std::string name,int clientSocket,Server* server)
+        : m_nickName(name),m_clientSocket(clientSocket),_server(server) {}
+    void sendFriendRequest(Netizen* target);
+    bool acceptFriendRequest(Netizen* target);
     void delFriend(std::string name);
     void sendMessage(std::string context);
     void listFriends();
     bool hasId(std::string name);
+    std::string getName(){return m_nickName;}
 private:
-    std::string m_account;
     std::string m_nickName;
     int m_clientSocket;
     std::vector<Netizen*> _friends;
+    Server* _server;
 };
 
 #endif // NETIZEN_H
