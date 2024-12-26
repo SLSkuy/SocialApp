@@ -40,62 +40,135 @@ bool DBControl::initDB() //连接数据库
             return false;
         }
     }
-    return true;
-}
 
-bool DBControl::loadNetizens(std::vector<Netizen> &netizens)
-{
-    mysqlpp::Query query = m_connection.query();
-    query.reset();
-    query << "Select * From netizens; ";
-    if (mysqlpp::StoreQueryResult result = query.store()) {
-        for (int i{0}; i != result.num_rows(); i++) {
-            netizens.emplace_back(
-                (std::string) result[i][0],
-                (std::string) result[i][1]); //ToDo:netizen缺少nickname//////////////////////////
-        } /*
-        for (auto &netizen : netizens) {
-            query.reset();
-            query << "Select friend From" + netizen.getAccount() + ";";
-            if (mysqlpp::StoreQueryResult result = query.store()) {
-                for (int i{0}; i != result.num_rows(); i++) {
-                    netizen.addFriend(result[i][0]);
-                }
-            }
-            cerr << "导入成功" << endl;
-        }*/
+    query << "Show Tables Like 'netizens';";
+    if (query.store().num_rows()) {
+        cerr << "找到账户信息" << endl;
     } else {
         cerr << "未找到账户信息" << endl;
-        query.reset();
         query << "Create Table netizens (account char(32) Primary Key, nickname char(32) );";
-        if (query.execute()) {
+        if (query.exec()) {
             cerr << "创建netizens表成功:" << query.error() << endl;
         } else {
             cerr << "创建netizens表失败:" << query.error() << endl;
             return false;
         }
     }
+
+    query << "Show Tables Like 'friends';";
+    if (query.store().num_rows()) {
+        cerr << "找到好友信息" << endl;
+    } else {
+        cerr << "未找到好友信息" << endl;
+        query << "Create Table friends (account char(32), friend char(32),Primary "
+                 "Key(account,friend));";
+        if (query.exec()) {
+            cerr << "创建friends表成功:" << query.error() << endl;
+        } else {
+            cerr << "创建friends表失败:" << query.error() << endl;
+            return false;
+        }
+    }
     return true;
 }
 
-bool DBControl::saveNetizen(Netizen &netizen)
+bool DBControl::loadNetizens(std::vector<Netizen> &netizens) //从数据库导入
 {
     mysqlpp::Query query = m_connection.query();
-    query.reset();
-    if (netizen.getAccount() == "netizens") {
-        cerr << "不准账户名为\"netizens\"";
-        return false;
+    query << "Select * From netizens; ";
+    if (mysqlpp::StoreQueryResult result = query.store()) {
+        for (int i{0}; i != result.num_rows(); i++) {
+            netizens.emplace_back((std::string) result[i][0], (std::string) result[i][1]);
+        }
+        for (auto &netizen : netizens) {
+            query.reset();
+            query << "Select friend From friends Where account=" + netizen.getAccount() + ";";
+            if (mysqlpp::StoreQueryResult result = query.store()) {
+                for (int i{0}; i != result.num_rows(); i++) {
+                    netizen.addFriend((std::string) result[i][0]);
+                }
+            }
+        }
+    } else {
+        {
+            cerr << "loadNetizens未找到账户信息" << endl;
+            return false;
+        }
     }
-    //ToDo好友保存待实现///////////////////////////////////////////////////////////
-    query << "Insert Into netizens Value ('" + netizen.getAccount() + "','" + netizen.getNickname()
-                 + "');";
-    if (query.exec())
-        cerr << "保存成功" + netizen.getNickname() << endl;
-    else
-        cerr << "保存失败:" + netizen.getNickname() << endl;
+    cerr << "导入成功" << endl;
     return true;
 }
-/*
+
+bool DBControl::saveNetizen(std::string account, std::string nickname) //保存账户
+{
+    mysqlpp::Query query = m_connection.query();
+
+    query << "Insert Into netizens Value ('" + account + "','" + nickname + "');";
+    if (!query.exec()) {
+        cerr << "保存失败:" + account << endl;
+        return false;
+    }
+    return true;
+}
+
+bool DBControl::delNetizen(std::string account) //删除账户
+{
+    mysqlpp::Query query = m_connection.query();
+    query << "Delete From netizens Where account = '" + account
+                 + "';Delete From friends Where account = '" + account
+                 + "';Delete From friends Where friend = '" + account + "';";
+    if (!query.exec()) {
+        cerr << "删除失败:" + account << endl;
+        return false;
+    }
+    return true;
+}
+
+bool DBControl::updateNickname(std::string account, std::string nickname) //更新昵称
+{
+    mysqlpp::Query query = m_connection.query();
+    query << "Update netizens Set nickname='" + nickname + "' Where account='" + account + "';";
+    if (!query.exec()) {
+        cerr << "更新错误:" + account + "!";
+        return false;
+    }
+
+    return true;
+}
+
+bool DBControl::saveFriend(std::string netizen1, std::string netizen2) //保存指定好友
+{
+    mysqlpp::Query query = m_connection.query();
+
+    query << "Insert Into friends Value ('" + netizen1 + "','" + netizen2 + "'),('" + netizen2
+                 + "','" + netizen1 + "');";
+    if (!query.execute()) {
+        cerr << "保存好友失败:" + netizen1 + " " + netizen2 << endl;
+        return false;
+    }
+
+    return true;
+}
+
+bool DBControl::delFriend(std::string netizen1, std::string netizen2) //删除指定好友
+{
+    mysqlpp::Query query = m_connection.query();
+    query << "Delete From friends Where account = '" + netizen1 + "' AND friend = '" + netizen2
+                 + "';";
+    if (!query.exec()) {
+        cerr << "删除失败:" + netizen1 + "  " + netizen2 << query.error() << endl;
+        return false;
+    }
+    query << "Delete From friends Where friend = '" + netizen1 + "' AND account = '" + netizen2
+                 + "';";
+    if (!query.exec()) {
+        cerr << "删除失败:" + netizen1 + "  " + netizen2 << query.error() << endl;
+        return false;
+    }
+    return true;
+}
+
+/*//TODO:信息处理是否保留
 void DBControl::loadMessages(std::vector<Message> &messages, std::vector<Netizen> &netizens)
 {
     mysqlpp::Query query = m_connection.query();

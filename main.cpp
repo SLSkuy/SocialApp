@@ -14,9 +14,10 @@ using std::endl;
 #include <string>
 using std::string;
 
-//测试用
+//TODO测试用
 #include <vector>
 #include "netizen.h"
+std::vector<Netizen> netizens;
 //测试用
 
 int main()
@@ -36,25 +37,16 @@ int main()
             cout << "Please input C or S: ";
         }
     }*/
+
+    //TODO:测试函数
     DBControl db;
     db.initDB();
-    std::vector<Netizen> netizens;
     db.loadNetizens(netizens);
-    Netizen netizen{"123", "nick"};
-    db.saveNetizen(netizen);
 
-    std::cout << "1";
-    /*mysqlpp::Connection connection;
-
-    mysqlpp::Query query = connection.query();
-    query << "Select * From Netizens";
-    mysqlpp::StoreQueryResult result = query.store();
-    for (int i = 0; i != result.num_rows(); i++) {
-        for (int j = 0; j != result[i].size(); j++) {
-            std::cout << result[i][j] << " ";
-        }
-        cout << std::endl;
-    }*/
+    db.saveFriend("123", "456");
+    db.delFriend("123", "456");
+    //db.saveNetizen("123", "nick");
+    //db.saveNetizen("456", "nick1");
 
     return 0;
 }

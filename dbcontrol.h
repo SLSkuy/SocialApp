@@ -13,8 +13,12 @@ class DBControl
 {
     public:
     bool initDB(); //连接数据库
-    bool loadNetizens(std::vector<Netizen> &netizens);
-    bool saveNetizen(Netizen &netizen);
+    bool loadNetizens(std::vector<Netizen> &netizens); //从数据库导入
+    bool saveNetizen(std::string account, std::string nickname); //保存账户(不保存好友!)
+    bool delNetizen(std::string account); //删除账户（顺带删除好友!）
+    bool updateNickname(std::string account, std::string nickname); //更新昵称
+    bool saveFriend(std::string netizenAccount, std::string friendAccount); //保存指定好友
+    bool delFriend(std::string netizenAccount, std::string friendAccount); //删除指定好友
     //void loadMessages(std::vector<Message> &messages);
 
     private:

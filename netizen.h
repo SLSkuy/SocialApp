@@ -28,6 +28,8 @@ Netizen()
     void listFriends();
     bool hasId(std::string);
     //临时
+    void addFriend(std::string friendAccount); //强行加好友单向
+
     std::string getAccount()
     {
         return m_account;

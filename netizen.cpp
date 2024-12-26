@@ -11,6 +11,18 @@ using std::cin;     using std::cout;    using std::endl;    using std::cerr;
 #include <arpa/inet.h>
 #include <limits>
 
+//TODO:测试函数
+extern std::vector<Netizen> netizens;
+
+void Netizen::addFriend(std::string friendAccount)
+{
+    for (auto &i : netizens) {
+        if (i.getAccount() == friendAccount)
+            _friends.push_back(&i); //TODO:未使用hasId///////////////////////////////////////////////
+    }
+}
+//测试
+
 void Netizen::signUp()
 {
     m_clientSocket = socket(AF_INET, SOCK_STREAM, 0);
