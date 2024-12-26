@@ -13,8 +13,8 @@ using std::cin;     using std::cout;    using std::endl;    using std::cerr;
 
 void Netizen::signUp()
 {
-    int clientFd = socket(AF_INET,SOCK_STREAM,0);
-    if(clientFd <= 0){
+    m_clientSocket = socket(AF_INET, SOCK_STREAM, 0);
+    if (m_clientSocket <= 0) {
         cerr << "Socket creation failed!" << endl;
         return;
     }
@@ -24,20 +24,26 @@ void Netizen::signUp()
     serverAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
     serverAddress.sin_port = htons(8080);
 
-    if(connect(clientFd,(struct sockaddr*) &serverAddress,sizeof(serverAddress)) < 0){
+    if (connect(m_clientSocket, (struct sockaddr *) &serverAddress, sizeof(serverAddress)) < 0) {
         cout << "connect failed" << endl;
         return;
     }
 
+    sendMessage();
+}
+
+void Netizen::sendMessage()
+{
     std::string buf;
     while (true) {
         buf.clear();
 
         cout << "Enter message: ";
-        cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');   //刷新输入留缓冲区防止多余信息写入缓冲区
+        cin.ignore(std::numeric_limits<std::streamsize>::max(),
+                   '\n'); //刷新输入留缓冲区防止多余信息写入缓冲区
         cin >> buf;
 
         // 发送消息到服务器
-        send(clientFd, buf.c_str(), sizeof(buf.c_str()), 0);
+        send(m_clientSocket, buf.c_str(), sizeof(buf.c_str()), 0);
     }
 }

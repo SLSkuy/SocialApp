@@ -13,7 +13,8 @@
 class Message
 {
 public:
-    Message();
+Message(std::string);
+
 private:
     std::string m_time;
     std::string m_context;
