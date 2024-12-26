@@ -2,7 +2,7 @@
 // 2024-12-23
 // 社交软件主函数交互
 
-#include "socialui.h"
+#include "client.h"
 #include "server.h"
 
 #include <iostream>
@@ -26,7 +26,7 @@ int main()
             // startUp();  //作为用户端启动交互界面
             break;
         }else{
-            cout << "Please input C or S";
+            cout << "Please input C or S: ";
         }
     }
 

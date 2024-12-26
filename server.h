@@ -30,6 +30,7 @@ private:
     std::string m_Port;
     std::unordered_map<int,std::string> m_clients; //(port,name)
     std::unordered_map<int,int> m_sockets; //(port,socket)
+    std::vector<Netizen> m_netizens;
 };
 
 void startServer(); //启动服务器 后续客户服务端分离后可写入服务端主函数
