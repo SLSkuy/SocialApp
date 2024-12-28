@@ -97,3 +97,8 @@ bool Netizen::hasId(std::string name)
     }
     return false;
 }
+
+void Netizen::addFriend(Netizen* target)
+{
+    _friends.emplace_back(target);
+}

@@ -7,6 +7,7 @@
 
 #include "netizen.h"
 #include "message.h"
+#include "dbcontrol.h"
 
 #include <unordered_map>
 #include <vector>
@@ -30,6 +31,7 @@ private:
     std::unordered_map<int,std::string> m_clients; //(port,name)
     std::unordered_map<int,int> m_sockets; //(port,socket)
     std::vector<Netizen> m_netizens;
+    DBControl m_db;
 };
 
 void startServer(); //启动服务器 后续客户服务端分离后可写入服务端主函数

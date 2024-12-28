@@ -77,6 +77,10 @@ void Server::initServer()   //初始化获取服务端socket
         return;
     }
 
+    //数据库
+    m_db.initDB();
+    m_db.loadNetizens(m_netizens);
+
     cout << "Server initialization completed.\n"
          << "Server is listening on port " << m_Port << "..." << endl;
 
@@ -139,10 +143,12 @@ void Server::regNetizen(std::string nickName,int clientSocket,int clientPort)
     m_netizens.emplace_back(newUser);
     m_clients[clientPort] = nickName;
     m_sockets[clientPort] = clientSocket;
+    m_db.saveNetizen(nickName);
 }
 
 void Server::delNetizen(std::string nickName)
 {
+    m_db.delNetizen(nickName);
     for(auto& it : m_netizens){
         it.delFriend(nickName);     //使所有用户删除该用户好友
     }
