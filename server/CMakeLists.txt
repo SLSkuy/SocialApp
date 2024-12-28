@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.30)
+cmake_minimum_required(VERSION 3.31)
 
 project(SocialApp LANGUAGES CXX)
 
@@ -7,16 +7,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_executable(
   SocialApp
   main.cpp
-  socialui.h
-  socialui.cpp
   netizen.h
   netizen.cpp
   server.h
   server.cpp
   message.h
-  message.cpp
-  client.h
-  client.cpp
   dbcontrol.h
   dbcontrol.cpp)
 
@@ -43,8 +38,9 @@ target_link_libraries(SocialApp PRIVATE /usr/lib/libmysqlpp.so)
 
 # target_link_libraries( SocialApp PRIVATE m )
 
-# set_target_properties( SocialApp PROPERTIES CXX_STANDARD 20 CXX_EXTENSIONS OFF
-# etc.. ) 设置指定的C++编译器版本是必须的，如果不设置，或者为OFF，则指定版本不可用时，会使用上一版本。
+# set_target_properties( SocialApp PROPERTIES
+# CXX_STANDARD 20 CXX_EXTENSIONS OFF etc.. )
+# 设置指定的C++编译器版本是必须的，如果不设置，或者为OFF，则指定版本不可用时，会使用上一版本。
 # set_target_properties(SocialApp PROPERTIES  CXX_STANDARD_REQUIRED on)
 
 # --------------------------------------------------------------------------
@@ -76,7 +72,8 @@ target_link_libraries(SocialApp PRIVATE /usr/lib/libmysqlpp.so)
 # target相关的语句用于定义来约束link、compile等相关属性的scope。 set(CMAKE_CXX_STANDARD 20)
 # set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# 完整的project命令 project( SocialApp LANGUAGES CXX ) DESCRIPTION "Description of
-# project" HOMEPAGE_URL "http://www.abc.com" VERSION 0.1.0 )
+# 完整的project命令 project( SocialApp LANGUAGES CXX )
+# DESCRIPTION "Description of project" HOMEPAGE_URL "http://www.abc.com" VERSION
+# 0.1.0 )
 # execute_process(COMMAND g++ -std=c++20 -xc++-system-header -fmodules-ts #
 # 如何要使用modules,该命令应该放在project命令之后 iostream string )

@@ -17,7 +17,7 @@ class Server
 {
 public:
     Server(std::string ip,std::string port) : m_IP(ip),m_Port(port) {}
-    void regNetizen(std::string nickName,int clientSocket,int clientPort);
+    bool regNetizen(std::string nickName,int clientSocket,int clientPort);
     void delNetizen(std::string nickName);
     void initServer();
     void handleClientSocket();
@@ -33,7 +33,5 @@ private:
     std::vector<Netizen> m_netizens;
     DBControl m_db;
 };
-
-void startServer(); //启动服务器 后续客户服务端分离后可写入服务端主函数
 
 #endif // SERVER_H

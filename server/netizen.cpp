@@ -14,9 +14,14 @@
 
 void Netizen::sendFriendRequest(Netizen* target)
 {
+    if(target->m_nickName == m_nickName){
+        std::string reply{"you could not make you own friend."};
+        send(m_clientSocket,reply.c_str(),reply.size(),0);
+        return;
+    }
     if(hasId(target->m_nickName)){
         //std::cout << target->m_nickName << "is already your friend" << std::endl;
-        std::string reply{target->m_nickName + "is already your friend."};
+        std::string reply{target->m_nickName + " is already your friend."};
         send(m_clientSocket,reply.c_str(),reply.size(),0);
         return;
     }else{
@@ -56,6 +61,8 @@ void Netizen::delFriend(std::string name)
             break;
         }else{
             //std::cout << "you don't have a friend named: " << name << std::endl;
+            std::string buf{"you don't have a friend named: " + name};
+            send(m_clientSocket,buf.c_str(),buf.size(),0);
         }
     }
 }
@@ -83,7 +90,7 @@ void Netizen::listFriends()
     //std::cout << m_nickName << "'s friends are listed below:\n";
     std::string reply{"your friends are listed below:\n"};
     for(auto& it : _friends){
-        reply += it->m_nickName;
+        reply += (it->m_nickName + " ");
         //std::cout << it->m_nickName << ' ';
     }
     send(m_clientSocket,reply.c_str(),reply.size(),0);

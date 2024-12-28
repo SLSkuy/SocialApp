@@ -17,7 +17,12 @@ class DBControl
     bool saveNetizen(std::string account); //保存账户(不保存好友!)
     bool delNetizen(std::string account); //删除账户（顺带删除好友!）
     bool saveFriend(std::string netizenAccount, std::string friendAccount); //保存指定好友
-    bool delFriend(std::string netizenAccount, std::string friendAccount); //删除指定好友
+    bool delFriend(std::string netizenAccount,
+                   std::string friendAccount); //删除指定好友 TODO:没有用上
+    /*
+    bool saveNetizen(std::string account, std::string nickname); //保存账户(不保存好友!)
+    bool updateNickname(std::string account, std::string nickname); //更新昵称*/
+    //void loadMessages(std::vector<Message> &messages);
 
 private:
     mysqlpp::Connection m_connection{false};

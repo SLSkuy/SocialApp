@@ -3,7 +3,6 @@
 // ui动画交互实现
 
 #include "socialui.h"
-#include "netizen.h"
 
 #include <iostream>
 #include <unistd.h> //for usleep()

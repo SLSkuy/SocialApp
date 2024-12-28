@@ -15,24 +15,16 @@ class Netizen
 public:
     Netizen(std::string name,int clientSocket,Server* server)
         : m_nickName(name),m_clientSocket(clientSocket),_server(server) {}
-    Netizen(std::string name) : m_nickName{name}
-    {}
+    Netizen(std::string name) : m_nickName(name){}
     void sendFriendRequest(Netizen* target);
     bool acceptFriendRequest(Netizen* target);
     void delFriend(std::string name);
     void sendMessage(std::string context);
     void listFriends();
     bool hasId(std::string name);
-
-    //TODO:修改
     void addFriend(Netizen* target);
-
-    std::string getName()
-    {
-        return m_nickName;
-    }
-
-private:  
+    std::string getName() {return m_nickName;} //Server处理找到指定Netizen对象
+private:
     std::string m_nickName;
     int m_clientSocket;
     std::vector<Netizen*> _friends;
