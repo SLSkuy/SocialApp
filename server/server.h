@@ -17,6 +17,7 @@ class Server
 {
 public:
     Server(std::string ip,std::string port) : m_IP(ip),m_Port(port) {}
+    bool logNetizen(std::string nickName, int clientSocket, int clientPort);
     bool regNetizen(std::string nickName,int clientSocket,int clientPort);
     void delNetizen(std::string nickName);
     void initServer();

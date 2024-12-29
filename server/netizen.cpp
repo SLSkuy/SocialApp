@@ -25,6 +25,11 @@ void Netizen::sendFriendRequest(Netizen* target)
         send(m_clientSocket,reply.c_str(),reply.size(),0);
         return;
     }else{
+        if (!target->status()) { //检测对方在线状态
+            std::string reply{target->getName() + " not online."};
+            send(m_clientSocket, reply.c_str(), reply.size(), 0);
+            return;
+        }
         if(target->acceptFriendRequest(this)){
             target->_friends.emplace_back(this);
             this->_friends.emplace_back(target);
@@ -94,7 +99,7 @@ void Netizen::listFriends()
         //std::cout << it->m_nickName << ' ';
     }
     send(m_clientSocket,reply.c_str(),reply.size(),0);
-    //std::cout << std::endl;
+    std::cout << std::endl;
 }
 
 bool Netizen::hasId(std::string name)
@@ -108,4 +113,11 @@ bool Netizen::hasId(std::string name)
 void Netizen::addFriend(Netizen* target)
 {
     _friends.emplace_back(target);
+}
+
+void Netizen::updateInfo(int clientSocket, Server* server) //登录时更新与服务器相关信息
+{
+    m_clientSocket = clientSocket;
+    _server = server;
+    m_onLine = true;
 }

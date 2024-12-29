@@ -31,6 +31,22 @@ bool signUp(int& clientSocket)
     return true;
 }
 
+bool logIn(int& clientSocket)
+{
+    string input;
+    cout << "Please enter your name: ";
+    cin >> input;
+    string buf{"/logIn " + input};
+    send(clientSocket, buf.c_str(), buf.size(), 0);
+
+    char buffer[128];
+    memset(buffer, 0, 128);
+    recv(clientSocket, buffer, 128, 0);
+    buf = buffer;
+    if (buf == "failed") return false;
+    return true;
+}
+
 int connect2Server()    //连接到服务器
 {
     int clientSocket = socket(AF_INET,SOCK_STREAM,0);   //获取客户端socket

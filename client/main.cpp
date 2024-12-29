@@ -44,7 +44,21 @@ int main()
             }
         }else if(userInput == "2"){
             clientSocket = connect2Server();
+            if (clientSocket < 0) { //尝试连接服务器
+                //连接服务器失败程序退出
+                return -1;
+            }
 
+            if (logIn(clientSocket)) {
+                //注册成功
+                //启动用户交互界面
+                cout << "logIn successfully" << endl;
+                break;
+            } else {
+                cout << "logIn failed.\n"
+                     << "The progress will exit." << endl;
+                return -1;
+            }
         } else {
             cout << "Please input 1 or 2, try again: ";
         }

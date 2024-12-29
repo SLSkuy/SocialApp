@@ -9,6 +9,6 @@ extern bool signUp(int& clientSocket);
 extern int connect2Server();
 extern void sendMsg2Server(int& clientSocket);
 extern void receiveFromServer(int clientSocket);
-extern bool signIn(int& clientSocket);
+extern bool logIn(int& clientSocket);
 
 #endif // CLIENT_H
