@@ -43,8 +43,8 @@ void Server::initServer()   //初始化获取服务端socket
     }
 
     //数据库
-    m_db.initDB();
-    m_db.loadNetizens(m_netizens);
+    if (!m_db.initDB()) return;
+    if (!m_db.loadNetizens(m_netizens)) return;
 
     cout << "Server initialization completed.\n"
          << "Server is listening on port " << m_Port << "..." << endl;
@@ -68,6 +68,7 @@ void Server::handleClientSocket()   //捕获客户端socket
             int clientPort{ntohs(clientAddress.sin_port)};
             cout << "Client on port " << clientPort << " connected." << endl;
 
+            cerr << "clientPort:" << clientPort << " clientSocket:" << clientSocket << endl;
             m_sockets[clientPort] = clientSocket;
 
             std::thread(&Server::handleClientMessage,this,clientSocket, clientPort).detach();   //每成功捕获一个用户连接新开一个线程用于接受客户端消息
@@ -172,13 +173,14 @@ void Server::clientProcess(std::string& msg,int clientPort)   //初步处理接�
                 arguments = "failed";
             }
             send(clientSocket, arguments.c_str(), arguments.size(), 0);
-        } else
+        } else {
             for (auto& it : m_netizens) {
                 if (it.getName() == m_clients[clientPort]) {
                     it.sendMessage(msg);
                     break; //找到后跳出避免多余性能消耗
                 }
             }
+        }
     }
 }
 

@@ -38,7 +38,7 @@ int main()
                 cout << "signUp successfully" << endl;
                 break;
             }else{
-                cout << "signUp failed.\n"
+                cout << "signUp failed: Duplicate name.\n"
                      << "The progress will exit." << endl;
                 return -1;
             }
@@ -55,7 +55,7 @@ int main()
                 cout << "logIn successfully" << endl;
                 break;
             } else {
-                cout << "logIn failed.\n"
+                cout << "logIn failed: No such user.\n"
                      << "The progress will exit." << endl;
                 return -1;
             }
