@@ -36,6 +36,7 @@ int main()
                 //注册成功
                 //启动用户交互界面
                 cout << "signUp successfully" << endl;
+                cout << "Enter\"/help\" to get help" << endl;
                 break;
             }else{
                 cout << "signUp failed: Duplicate name.\n"
@@ -53,6 +54,7 @@ int main()
                 //注册成功
                 //启动用户交互界面
                 cout << "logIn successfully" << endl;
+                cout << "Enter\"/help\" to get help" << endl;
                 break;
             } else {
                 cout << "logIn failed: No such user.\n"
