@@ -16,8 +16,10 @@ int main()
     //启动客户端
     loadingAnimation();
 
-    cout << "Welcome to Yuzu-ChatPlatform!\n"
-         <<  "Would you like to Sign-Up(1) or Log-In(2): ";
+    cout << "Welcome to Yuzu-ChatPlatform!\n";
+    string serverIP;
+    serverIP = getIP();
+    cout <<  "Would you like to Sign-Up(1) or Log-In(2): ";
 
     int clientSocket;
     string userInput;
@@ -26,7 +28,7 @@ int main()
         if(userInput == "1")
         {
             //signUp 本地输入账号密码等发送服务端
-            clientSocket = connect2Server();
+            clientSocket = connect2Server(serverIP);
             if(clientSocket < 0){    //尝试连接服务器
                 //连接服务器失败程序退出
                 return -1;
@@ -44,7 +46,7 @@ int main()
                 return -1;
             }
         }else if(userInput == "2"){
-            clientSocket = connect2Server();
+            clientSocket = connect2Server(serverIP);
             if (clientSocket < 0) { //尝试连接服务器
                 //连接服务器失败程序退出
                 return -1;

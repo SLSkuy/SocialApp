@@ -15,6 +15,15 @@ using std::string;
 using std::cin;     using std::cout;    using std::endl;    using std::cerr;
 #include <thread>
 
+string getIP()
+{
+    string buf;
+    cout << "Please input the server IP\n(input default for 127.0.0.1): ";
+    cin >> buf;
+    if(buf == "default")buf = "127.0.0.1";
+    return buf;
+}
+
 bool signUp(int& clientSocket)
 {
     string input;
@@ -47,7 +56,7 @@ bool logIn(int& clientSocket)
     return true;
 }
 
-int connect2Server()    //连接到服务器
+int connect2Server(string IP)    //连接到服务器
 {
     int clientSocket = socket(AF_INET,SOCK_STREAM,0);   //获取客户端socket
     if(clientSocket <= 0){
@@ -57,7 +66,7 @@ int connect2Server()    //连接到服务器
 
     struct sockaddr_in serverAddress;   //服务器地址信息
     serverAddress.sin_family = AF_INET;
-    serverAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
+    serverAddress.sin_addr.s_addr = inet_addr(IP);
     serverAddress.sin_port = htons(8080);
 
     if(connect(clientSocket,(struct sockaddr*) &serverAddress,sizeof(serverAddress)) < 0){  //尝试连接服务器

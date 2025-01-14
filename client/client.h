@@ -5,8 +5,11 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
+#include <string>
+
+extern std::string getIP();
 extern bool signUp(int& clientSocket);
-extern int connect2Server();
+extern int connect2Server(std::string IP);
 extern void sendMsg2Server(int& clientSocket);
 extern void receiveFromServer(int clientSocket);
 extern bool logIn(int& clientSocket);
