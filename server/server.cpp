@@ -202,7 +202,13 @@ void Server::msgProcess(Message& msg)   //处理信息
 
         if(command == "/list"){ //委托Neitzen类处理列出所有朋友
             msg._sender->listFriends();
-
+        }else if(command == "/help"){
+            for(auto& it : m_clients){
+                if(it.second == msg._sender->getName()){
+                    int clientPort{it.first};
+                    send(m_sockets[clientPort],"/friend <name>       Add friend.\n/del <name>          Delete friend.\n/del <name>          Delete friend.\n/list                List friends.",1024,0);
+                }
+            }
         }else if(command == "/friend"){ //委托Netizen类处理添加好友事件
             ss >> arguments;
 

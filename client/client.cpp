@@ -86,15 +86,7 @@ void sendMsg2Server(int& clientSocket)   //发送信息给服务端
         cout << "Enter message: ";
         //cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
         std::getline(cin,buf);
-        if (buf == "/help") {
-            cout << "/friend <name>       Add friend." << endl;
-            cout << "/del <name>          Delete friend." << endl;
-            cout << "/m <name> <content>  Private chat." << endl;
-            cout << "/list                List friends." << endl;
-        }
-        // 发送消息到服务端
-        else
-            send(clientSocket, buf.c_str(), 1024, 0);
+        send(clientSocket, buf.c_str(), 1024, 0);
     }
 }
 
