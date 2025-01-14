@@ -66,7 +66,7 @@ int connect2Server(string IP)    //连接到服务器
 
     struct sockaddr_in serverAddress;   //服务器地址信息
     serverAddress.sin_family = AF_INET;
-    serverAddress.sin_addr.s_addr = inet_addr(IP);
+    serverAddress.sin_addr.s_addr = inet_addr(IP.c_str());
     serverAddress.sin_port = htons(8080);
 
     if(connect(clientSocket,(struct sockaddr*) &serverAddress,sizeof(serverAddress)) < 0){  //尝试连接服务器
