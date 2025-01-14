@@ -236,16 +236,6 @@ void Server::msgProcess(Message& msg)   //处理信息
                     }
                 }
             } else {
-                if (!msg._receiver->status()) { //检测对方状态
-                    for (auto& it : m_clients) {
-                        if (it.second == msg._sender->getName()) {
-                            int clientPort{it.first};
-                            std::string reply{"Target not online"};
-                            send(m_sockets[clientPort], reply.c_str(), reply.size(), 0);
-                            return;
-                        }
-                    }
-                }
                 for (auto& it : m_clients) {
                     if (it.second == arguments) {
                         int clientPort{it.first};
